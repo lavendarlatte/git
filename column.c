@@ -1,5 +1,3 @@
-#define DISABLE_SIGN_COMPARE_WARNINGS
-
 #include "git-compat-util.h"
 #include "config.h"
 #include "column.h"
@@ -35,7 +33,7 @@ static int item_length(const char *s)
  */
 static void layout(struct column_data *data, int *width)
 {
-	int i;
+	size_t i;
 
 	*width = 0;
 	for (i = 0; i < data->list->nr; i++)
@@ -53,7 +51,8 @@ static void layout(struct column_data *data, int *width)
 
 static void compute_column_width(struct column_data *data)
 {
-	int i, x, y;
+	int x, y;
+    size_t i;
 	for (x = 0; x < data->cols; x++) {
 		data->width[x] = XY2LINEAR(data, x, 0);
 		for (y = 0; y < data->rows; y++) {
@@ -104,7 +103,7 @@ static void shrink_columns(struct column_data *data)
 static void display_plain(const struct string_list *list,
 			  const char *indent, const char *nl)
 {
-	int i;
+	size_t i;
 
 	for (i = 0; i < list->nr; i++)
 		printf("%s%s%s", indent, list->items[i].string, nl);
@@ -114,7 +113,8 @@ static void display_plain(const struct string_list *list,
 static int display_cell(struct column_data *data, int initial_width,
 			const char *empty_cell, int x, int y)
 {
-	int i, len, newline;
+	int len, newline;
+    size_t i;
 
 	i = XY2LINEAR(data, x, y);
 	if (i >= data->list->nr)
@@ -149,8 +149,9 @@ static void display_table(const struct string_list *list,
 			  const struct column_options *opts)
 {
 	struct column_data data;
-	int x, y, i, initial_width;
+	int x, y, initial_width;
 	char *empty_cell;
+    size_t i;
 
 	memset(&data, 0, sizeof(data));
 	data.list = list;
@@ -245,7 +246,7 @@ static int parse_option(const char *arg, int len, unsigned int *colopts,
 		{ "row",    COL_ROW,      COL_LAYOUT_MASK },
 		{ "dense",  COL_DENSE,    0 },
 	};
-	int i;
+	size_t i;
 
 	for (i = 0; i < ARRAY_SIZE(opts); i++) {
 		int set = 1, arg_len = len, name_len;
