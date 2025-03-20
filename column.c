@@ -34,14 +34,14 @@ static int item_length(const char *s)
 static void layout(struct column_data *data, int *width)
 {
 	size_t i;
-
+fprintf(stderr, "[ella] data->len[0]  %d list->nr %zu\n", data->len[22], data->list->nr);
 	*width = 0;
 	for (i = 0; i < data->list->nr; i++)
 		if (*width < data->len[i])
 			*width = data->len[i];
 
 	*width += data->opts.padding;
-
+fprintf(stderr, "[ella] width %d\n", *width);
 	data->cols = (data->opts.width - strlen(data->opts.indent)) / *width;
 	if (data->cols == 0)
 		data->cols = 1;
@@ -51,13 +51,13 @@ static void layout(struct column_data *data, int *width)
 
 static void compute_column_width(struct column_data *data)
 {
-	int x, y;
-    size_t i;
+	int i, x, y;
+    fprintf(stderr, "[ella] nr %d", (int)data->list->nr);
 	for (x = 0; x < data->cols; x++) {
 		data->width[x] = XY2LINEAR(data, x, 0);
 		for (y = 0; y < data->rows; y++) {
 			i = XY2LINEAR(data, x, y);
-			if (i < data->list->nr &&
+			if (i < (int)data->list->nr &&
 			    data->len[data->width[x]] < data->len[i])
 				data->width[x] = i;
 		}
@@ -161,7 +161,7 @@ static void display_table(const struct string_list *list,
 	ALLOC_ARRAY(data.len, list->nr);
 	for (i = 0; i < list->nr; i++)
 		data.len[i] = item_length(list->items[i].string);
-
+fprintf(stderr,"[ella] call layout\n");
 	layout(&data, &initial_width);
 
 	if (colopts & COL_DENSE)
@@ -206,6 +206,8 @@ void print_columns(const struct string_list *list, unsigned int colopts,
 		break;
 	case COL_ROW:
 	case COL_COLUMN:
+        //if ((unsigned long)nopts.width < strlen(nopts.indent))
+            //return;
 		display_table(list, colopts, &nopts);
 		break;
 	default:
