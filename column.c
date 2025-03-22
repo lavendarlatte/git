@@ -42,6 +42,8 @@ fprintf(stderr, "[ella] data->len[0]  %d list->nr %zu\n", data->len[22], data->l
 
 	*width += data->opts.padding;
 fprintf(stderr, "[ella] width %d\n", *width);
+if ((size_t)data->opts.width < strlen(data->opts.indent))
+    BUG("indent");
 	data->cols = (data->opts.width - strlen(data->opts.indent)) / *width;
 	if (data->cols == 0)
 		data->cols = 1;
